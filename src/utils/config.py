@@ -5,6 +5,7 @@ Handles application settings, preferences, and keyboard shortcuts.
 
 import os
 import json
+from datetime import datetime
 from typing import Dict, Any, Optional
 from pathlib import Path
 
