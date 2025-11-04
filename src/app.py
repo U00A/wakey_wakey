@@ -255,14 +255,28 @@ class TaskSchedulerApp:
 
     def _initialize_views(self):
         """Initialize all view components."""
-        # These will be replaced with actual view components
-        self.views = {
-            "dashboard": self._create_placeholder_view("Dashboard"),
-            "tasks": self._create_placeholder_view("Tasks"),
-            "calendar": self._create_placeholder_view("Calendar"),
-            "statistics": self._create_placeholder_view("Statistics"),
-            "settings": self._create_placeholder_view("Settings")
-        }
+        # Import UI components
+        try:
+            from ui.components.dashboard import ModernDashboard
+            from ui.components.task_list import ModernTaskList
+
+            self.views = {
+                "dashboard": ModernDashboard(self.main_content, app_instance=self),
+                "tasks": ModernTaskList(self.main_content, app_instance=self),
+                "calendar": self._create_placeholder_view("Calendar"),
+                "statistics": self._create_placeholder_view("Statistics"),
+                "settings": self._create_placeholder_view("Settings")
+            }
+        except ImportError as e:
+            print(f"Warning: Could not import UI components: {e}")
+            # Fallback to placeholder views
+            self.views = {
+                "dashboard": self._create_placeholder_view("Dashboard"),
+                "tasks": self._create_placeholder_view("Tasks"),
+                "calendar": self._create_placeholder_view("Calendar"),
+                "statistics": self._create_placeholder_view("Statistics"),
+                "settings": self._create_placeholder_view("Settings")
+            }
 
     def _create_placeholder_view(self, view_name: str) -> ctk.CTkFrame:
         """Create a placeholder view for development."""
