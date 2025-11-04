@@ -64,12 +64,12 @@ def test_config():
         theme = config.get("theme", "dark")
         print(f"✓ Current theme: {theme}")
 
-        config.set("test_value", "test_data")
+        success = config.set("test_value", "test_data")
         retrieved = config.get("test_value")
-        if retrieved == "test_data":
+        if success and retrieved == "test_data":
             print("✓ Configuration get/set working")
         else:
-            print("✗ Configuration get/set failed")
+            print(f"✗ Configuration get/set failed (success: {success}, value: {retrieved})")
 
         # Clean up
         import shutil
