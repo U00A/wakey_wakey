@@ -209,6 +209,7 @@ def test_task_manager():
 
         # Clean up
         task_manager.delete_task(task_id)
+        os.remove("test_tasks_manager.db")
         print("✓ Task manager test completed")
 
     except Exception as e:
