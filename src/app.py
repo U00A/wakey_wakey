@@ -411,7 +411,14 @@ class TaskSchedulerApp:
     # Application control methods
     def new_task(self):
         """Open new task dialog."""
-        self.show_info("New Task dialog will be implemented")
+        try:
+            from ui.components.task_form import ModernTaskForm
+            form = ModernTaskForm(self.root, on_save=self.refresh_current_view)
+            self.wait_window(form)
+        except ImportError:
+            self.show_info("Task form component not available yet")
+        except Exception as e:
+            self.show_error(f"Error opening task form: {str(e)}")
 
     def search_tasks(self):
         """Open search dialog."""
