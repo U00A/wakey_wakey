@@ -13,10 +13,10 @@ import customtkinter as ctk
 # Add parent directories to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from database.manager import DatabaseManager
-from ui.themes.theme_manager import get_theme_manager
-from utils.helpers import format_datetime, calculate_task_statistics
-from core.task_manager import TaskManager
+from ...database.manager import DatabaseManager
+from ..themes.theme_manager import get_theme_manager
+from ...utils.helpers import format_datetime, calculate_task_statistics
+from ...core.task_manager import TaskManager
 
 
 class ModernDashboard(ctk.CTkFrame):
