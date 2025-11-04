@@ -465,7 +465,7 @@ def get_month_dates(target_date: date = None) -> List[List[date]]:
     calendar_start = first_day - timedelta(days=days_from_monday)
 
     # Get last day of month
-    next_month = first_day.replace(month=first_day.month % 12 + 1, year=first_day.year + (first_date.month // 12))
+    next_month = first_day.replace(month=first_day.month % 12 + 1, year=first_day.year + (first_day.month // 12))
     last_day = next_month - timedelta(days=1)
 
     # Find last Sunday of the calendar view
