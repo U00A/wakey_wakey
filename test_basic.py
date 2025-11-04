@@ -205,7 +205,7 @@ def test_task_manager():
 
         # Test statistics
         stats = task_manager.get_task_statistics()
-        print(f"✓ Task manager statistics: {stats['total_tasks']} total tasks")
+        print(f"✓ Task manager statistics: {stats.get('total_created', 0)} total tasks")
 
         # Clean up
         task_manager.delete_task(task_id)
