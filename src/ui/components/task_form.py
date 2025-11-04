@@ -14,11 +14,11 @@ from tkinter import messagebox
 # Add parent directories to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from database.manager import DatabaseManager
-from database.models import Task
-from ui.themes.theme_manager import get_theme_manager
-from utils.validators import ValidationError, validate_task_data, validate_task_title
-from core.task_manager import TaskManager
+from ...database.manager import DatabaseManager
+from ...database.models import Task
+from ..themes.theme_manager import get_theme_manager
+from ...utils.validators import ValidationError, validate_task_data, validate_task_title
+from ...core.task_manager import TaskManager
 
 
 class ModernTaskForm(ctk.CTkToplevel):
