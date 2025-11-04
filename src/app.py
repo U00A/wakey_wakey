@@ -259,13 +259,15 @@ class TaskSchedulerApp:
         try:
             from ui.components.dashboard import ModernDashboard
             from ui.components.task_list import ModernTaskList
+            from ui.components.calendar_view import ModernCalendarView
+            from ui.components.settings_panel import ModernSettingsPanel
 
             self.views = {
                 "dashboard": ModernDashboard(self.main_content, app_instance=self),
                 "tasks": ModernTaskList(self.main_content, app_instance=self),
-                "calendar": self._create_placeholder_view("Calendar"),
+                "calendar": ModernCalendarView(self.main_content, app_instance=self),
                 "statistics": self._create_placeholder_view("Statistics"),
-                "settings": self._create_placeholder_view("Settings")
+                "settings": ModernSettingsPanel(self.main_content, app_instance=self)
             }
         except ImportError as e:
             print(f"Warning: Could not import UI components: {e}")
