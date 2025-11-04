@@ -64,9 +64,10 @@ def test_config():
         theme = config.get("theme", "dark")
         print(f"✓ Current theme: {theme}")
 
-        success = config.set("test_value", "test_data")
-        retrieved = config.get("test_value")
-        if success and retrieved == "test_data":
+        # Test setting a valid configuration value (one that exists in defaults)
+        success = config.set("theme", "light")
+        retrieved = config.get("theme")
+        if success and retrieved == "light":
             print("✓ Configuration get/set working")
         else:
             print(f"✗ Configuration get/set failed (success: {success}, value: {retrieved})")
