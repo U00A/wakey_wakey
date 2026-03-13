@@ -7,7 +7,7 @@ import sqlite3
 import os
 from typing import List, Optional, Dict, Any
 from datetime import datetime, date, timedelta
-from .models import Task, Category, Alarm, DatabaseModel
+from database.models import Task, Category, Alarm, DatabaseModel
 
 
 class DatabaseManager(DatabaseModel):

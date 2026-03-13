@@ -38,11 +38,11 @@
   "start_maximized": false,
   "theme": "dark",
   "window_position": [
-    100,
-    100
+    -8,
+    -8
   ],
   "window_size": [
-    1200,
-    800
+    1920,
+    1009
   ]
 }

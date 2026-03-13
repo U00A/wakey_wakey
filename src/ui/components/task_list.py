@@ -9,15 +9,14 @@ from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional
 
 import customtkinter as ctk
+from tkinter import messagebox
 
-# Add parent directories to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from ...database.manager import DatabaseManager
-from ...database.models import Task
-from ..themes.theme_manager import get_theme_manager
-from ...utils.helpers import format_datetime, format_relative_time
-from ...core.task_manager import TaskManager
+# Imports using absolute paths (compatible with main.py's sys.path setup)
+from database.manager import DatabaseManager
+from database.models import Task
+from ui.themes.theme_manager import get_theme_manager
+from utils.helpers import format_datetime, format_relative_time
+from core.task_manager import TaskManager
 
 
 class ModernTaskList(ctk.CTkFrame):
@@ -113,8 +112,6 @@ class ModernTaskList(ctk.CTkFrame):
                 text=icon,
                 width=35,
                 height=35,
-                variable=self.view_var,
-                value=value,
                 command=lambda v=value: self.change_view_mode(v)
             )
             btn.pack(side="left", padx=2)
@@ -376,7 +373,7 @@ class ModernTaskList(ctk.CTkFrame):
 
         # Title
         title_color = self.theme_manager.get_color("text_secondary") if task.status == "Completed" else self.theme_manager.get_color("text_primary")
-        title_font = ctk.CTkFont(size=14, slant="italic" if task.status == "Completed" else "normal")
+        title_font = ctk.CTkFont(size=14, slant="italic" if task.status == "Completed" else "roman")
 
         title_label = ctk.CTkLabel(
             content_frame,
@@ -868,7 +865,7 @@ class ModernTaskList(ctk.CTkFrame):
 
     def edit_task(self, task):
         """Edit a task."""
-        from .task_form import ModernTaskForm
+        from ui.components.task_form import ModernTaskForm
 
         form = ModernTaskForm(self.parent, task, on_save=self.refresh_tasks)
         self.wait_window(form)
@@ -891,7 +888,7 @@ class ModernTaskList(ctk.CTkFrame):
 
     def new_task(self):
         """Create a new task."""
-        from .task_form import ModernTaskForm
+        from ui.components.task_form import ModernTaskForm
 
         form = ModernTaskForm(self.parent, on_save=self.refresh_tasks)
         self.wait_window(form)

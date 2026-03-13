@@ -11,14 +11,12 @@ from typing import List, Dict, Any, Optional
 
 import customtkinter as ctk
 
-# Add parent directories to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from ...database.manager import DatabaseManager
-from ...database.models import Task
-from ..themes.theme_manager import get_theme_manager
-from ...utils.helpers import format_datetime, get_month_dates, get_week_dates
-from ...core.task_manager import TaskManager
+# Imports using absolute paths (compatible with main.py's sys.path setup)
+from database.manager import DatabaseManager
+from database.models import Task
+from ui.themes.theme_manager import get_theme_manager
+from utils.helpers import format_datetime, get_month_dates, get_week_dates
+from core.task_manager import TaskManager
 
 
 class ModernCalendarView(ctk.CTkFrame):
@@ -766,7 +764,7 @@ class ModernCalendarView(ctk.CTkFrame):
     def new_task_for_date(self):
         """Create new task for selected date."""
         try:
-            from .task_form import ModernTaskForm
+            from ui.components.task_form import ModernTaskForm
 
             # Pre-fill due date
             task_data = {}
@@ -776,7 +774,7 @@ class ModernCalendarView(ctk.CTkFrame):
                 task_data["due_date"] = due_datetime.strftime("%Y-%m-%d %H:%M")
 
             # Create temporary task with pre-filled data
-            from ...database.models import Task
+            from database.models import Task
             temp_task = Task(task_data)
 
             form = ModernTaskForm(self.parent, temp_task, on_save=self.refresh_calendar)

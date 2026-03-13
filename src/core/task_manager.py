@@ -8,10 +8,10 @@ from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 
-from ..database.manager import DatabaseManager
-from ..database.models import Task, Category, Alarm
-from ..utils.validators import validate_task_data, ValidationError
-from ..utils.helpers import (
+from database.manager import DatabaseManager
+from database.models import Task, Category, Alarm
+from utils.validators import validate_task_data, ValidationError
+from utils.helpers import (
     export_tasks_to_csv, export_tasks_to_json,
     import_tasks_from_csv, import_tasks_from_json,
     calculate_task_statistics, format_datetime, ensure_directory_exists
@@ -545,9 +545,48 @@ class TaskManager:
 
     def get_most_productive_day(self) -> Optional[str]:
         """Find the most productive day of the week."""
-        # This would analyze historical data to determine patterns
-        # For now, return a placeholder
-        return "Monday"  # Placeholder implementation
+        try:
+            # Get completed tasks from last 90 days
+            end_date = date.today()
+            start_date = end_date - timedelta(days=90)
+            
+            filters = {
+                'status': 'Completed',
+                'date_from': start_date.isoformat(),
+                'date_to': end_date.isoformat()
+            }
+            
+            completed_tasks = self.db.get_all_tasks(filters)
+            
+            if not completed_tasks:
+                return None
+                
+            # Count completions by day of week
+            day_counts = {}
+            days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            
+            for task in completed_tasks:
+                if task.completed_at:
+                    try:
+                        # Extract date from completed_at timestamp
+                        completed_dt = datetime.fromisoformat(task.completed_at.replace('Z', '+00:00'))
+                        day_name = days_of_week[completed_dt.weekday()]
+                        day_counts[day_name] = day_counts.get(day_name, 0) + 1
+                    except (ValueError, TypeError):
+                        continue
+            
+            if not day_counts:
+                return None
+                
+            # Find max
+            most_productive = max(day_counts.items(), key=lambda x: x[1])[0]
+            count = day_counts[most_productive]
+            
+            return f"{most_productive} ({count} tasks)"
+            
+        except Exception as e:
+            print(f"Error calculating most productive day: {e}")
+            return None
 
     def get_upcoming_deadlines(self, hours: int = 72) -> List[Dict[str, Any]]:
         """Get upcoming task deadlines with urgency indicators."""

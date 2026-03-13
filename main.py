@@ -100,12 +100,12 @@ def main():
     print("Checking dependencies...")
     if not check_dependencies():
         sys.exit(1)
-    print("✓ All dependencies found")
+    print("All dependencies found [OK]")
 
     # Setup environment
     print("Setting up environment...")
     setup_environment()
-    print("✓ Environment ready")
+    print("Environment ready [OK]")
 
     # Start the application
     print("Starting Task Scheduler Pro...")
@@ -116,8 +116,12 @@ def main():
     except KeyboardInterrupt:
         print("\nApplication interrupted by user")
     except Exception as e:
+        import traceback
         print(f"\nFatal error: {e}")
+        print("\nFull traceback:")
+        traceback.print_exc()
         print("Please check the error above and try again.")
+        input("\nPress Enter to exit...")
         sys.exit(1)
     finally:
         print("Application closed")

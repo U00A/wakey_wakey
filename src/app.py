@@ -259,13 +259,16 @@ class TaskSchedulerApp:
         try:
             from ui.components.dashboard import ModernDashboard
             from ui.components.task_list import ModernTaskList
+            from ui.components.calendar_view import ModernCalendarView
+            from ui.components.statistics import ModernStatistics
+            from ui.components.settings import ModernSettings
 
             self.views = {
                 "dashboard": ModernDashboard(self.main_content, app_instance=self),
                 "tasks": ModernTaskList(self.main_content, app_instance=self),
-                "calendar": self._create_placeholder_view("Calendar"),
-                "statistics": self._create_placeholder_view("Statistics"),
-                "settings": self._create_placeholder_view("Settings")
+                "calendar": ModernCalendarView(self.main_content, app_instance=self),
+                "statistics": ModernStatistics(self.main_content, app_instance=self),
+                "settings": ModernSettings(self.main_content, app_instance=self)
             }
         except ImportError as e:
             print(f"Warning: Could not import UI components: {e}")
@@ -335,9 +338,9 @@ class TaskSchedulerApp:
 
         # Update task count
         try:
-            stats = self.database.get_task_statistics()
-            total_tasks = stats['total']
-            pending_tasks = stats['pending']
+            tasks = self.database.get_all_tasks()
+            total_tasks = len(tasks)
+            pending_tasks = sum(1 for task in tasks if getattr(task, "status", "") == "Pending")
             self.task_count_label.configure(text=f"{pending_tasks}/{total_tasks} pending")
         except:
             self.task_count_label.configure(text="0 tasks")
@@ -375,12 +378,17 @@ class TaskSchedulerApp:
     def _update_dashboard_stats(self):
         """Update dashboard statistics."""
         try:
-            stats = self.database.get_task_statistics()
+            tasks = self.database.get_all_tasks()
+            total_tasks = len(tasks)
+            completed_tasks = sum(1 for task in tasks if getattr(task, "status", "") == "Completed")
+            pending_tasks = sum(1 for task in tasks if getattr(task, "status", "") == "Pending")
+            completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+
             stats_text = (
-                f"Total: {stats['total']}\n"
-                f"Completed: {stats['completed']}\n"
-                f"Pending: {stats['pending']}\n"
-                f"Completion: {stats['completion_rate']}%"
+                f"Total: {total_tasks}\n"
+                f"Completed: {completed_tasks}\n"
+                f"Pending: {pending_tasks}\n"
+                f"Completion: {completion_rate:.1f}%"
             )
             self.stats_label.configure(text=stats_text)
         except:
@@ -414,7 +422,7 @@ class TaskSchedulerApp:
         try:
             from ui.components.task_form import ModernTaskForm
             form = ModernTaskForm(self.root, on_save=self.refresh_current_view)
-            self.wait_window(form)
+            self.root.wait_window(form)
         except ImportError:
             self.show_info("Task form component not available yet")
         except Exception as e:
@@ -422,7 +430,16 @@ class TaskSchedulerApp:
 
     def search_tasks(self):
         """Open search dialog."""
-        self.show_info("Search functionality will be implemented")
+        # Switch to tasks view
+        self.switch_view("tasks")
+
+        # Focus search bar if available on the tasks view
+        tasks_view = self.views.get("tasks")
+        if tasks_view is not None and hasattr(tasks_view, "search_entry"):
+            try:
+                tasks_view.search_entry.focus()
+            except Exception:
+                pass
 
     def toggle_theme(self):
         """Toggle between dark and light themes."""
@@ -517,7 +534,10 @@ For more help, check the documentation.
             self.set_status("Application started successfully")
             self.root.mainloop()
         except Exception as e:
-            messagebox.showerror("Startup Error", f"Failed to start application: {str(e)}")
+            import traceback
+            error_msg = f"Failed to start application: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
+            print(error_msg)  # Print to console as well
+            messagebox.showerror("Startup Error", error_msg)
             self.is_running = False
 
 

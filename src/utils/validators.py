@@ -94,6 +94,31 @@ def validate_priority(priority: str) -> str:
     return priority
 
 
+def validate_status(status: str) -> str:
+    """
+    Validate task status.
+
+    Args:
+        status: The status to validate
+
+    Returns:
+        Validated status
+
+    Raises:
+        ValidationError: If status is invalid
+    """
+    valid_statuses = ['Pending', 'Completed', 'Cancelled']
+
+    if not status:
+        return 'Pending'
+
+    status = str(status).strip().title()
+
+    if status not in valid_statuses:
+        raise ValidationError(f"Status must be one of: {', '.join(valid_statuses)}")
+
+    return status
+
 def validate_category(category: str, existing_categories: List[str] = None) -> str:
     """
     Validate task category.
@@ -471,6 +496,9 @@ def validate_task_data(data: Dict[str, Any], existing_categories: List[str] = No
 
     if 'priority' in data:
         validated_data['priority'] = validate_priority(data['priority'])
+
+    if 'status' in data:
+        validated_data['status'] = validate_status(data['status'])
 
     if 'category' in data:
         validated_data['category'] = validate_category(data['category'], existing_categories)

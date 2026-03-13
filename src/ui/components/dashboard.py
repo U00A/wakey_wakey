@@ -10,13 +10,11 @@ from typing import List, Dict, Any
 
 import customtkinter as ctk
 
-# Add parent directories to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from ...database.manager import DatabaseManager
-from ..themes.theme_manager import get_theme_manager
-from ...utils.helpers import format_datetime, calculate_task_statistics
-from ...core.task_manager import TaskManager
+# Imports using absolute paths (compatible with main.py's sys.path setup)
+from database.manager import DatabaseManager
+from ui.themes.theme_manager import get_theme_manager
+from utils.helpers import format_datetime, calculate_task_statistics
+from core.task_manager import TaskManager
 
 
 class ModernDashboard(ctk.CTkFrame):
@@ -134,7 +132,7 @@ class ModernDashboard(ctk.CTkFrame):
             self.theme_manager.get_color("primary"),
             row=0, column=0
         )
-        self.total_tasks_label = total_card.children[0].children[0]  # Get the label
+        self.total_tasks_label = total_card.value_label
 
         # Completed Tasks Card
         completed_card = self.create_stat_card(
@@ -144,7 +142,7 @@ class ModernDashboard(ctk.CTkFrame):
             self.theme_manager.get_color("priority_low"),
             row=0, column=2
         )
-        self.completed_tasks_label = completed_card.children[0].children[0]
+        self.completed_tasks_label = completed_card.value_label
 
         # Pending Tasks Card
         pending_card = self.create_stat_card(
@@ -154,7 +152,7 @@ class ModernDashboard(ctk.CTkFrame):
             self.theme_manager.get_color("priority_medium"),
             row=1, column=0
         )
-        self.pending_tasks_label = pending_card.children[0].children[0]
+        self.pending_tasks_label = pending_card.value_label
 
         # Overdue Tasks Card
         overdue_card = self.create_stat_card(
@@ -164,7 +162,7 @@ class ModernDashboard(ctk.CTkFrame):
             self.theme_manager.get_color("priority_high"),
             row=1, column=2
         )
-        self.overdue_tasks_label = overdue_card.children[0].children[0]
+        self.overdue_tasks_label = overdue_card.value_label
 
         # Completion Rate Card (spans 2 columns)
         completion_card = self.create_stat_card(
@@ -174,7 +172,7 @@ class ModernDashboard(ctk.CTkFrame):
             self.theme_manager.get_color("accent"),
             row=2, column=0, columnspan=3
         )
-        self.completion_rate_label = completion_card.children[0].children[0]
+        self.completion_rate_label = completion_card.value_label
 
     def create_stat_card(self, parent, title: str, value: str, color: str,
                         row: int, column: int, columnspan: int = 1):
@@ -205,6 +203,9 @@ class ModernDashboard(ctk.CTkFrame):
             text_color="white"
         )
         title_label.grid(row=1, column=0, padx=15, pady=(0, 10))
+
+        # Store reference to value label
+        card.value_label = value_label
 
         return card
 
